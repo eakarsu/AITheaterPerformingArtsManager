@@ -515,6 +515,119 @@ const features = {
       { key: 'pricing_range', label: 'Pricing Range', type: 'text', placeholder: 'e.g., $50 - $500 per subscription' },
     ],
   },
+
+  'script-analysis': {
+    key: 'script-analysis',
+    title: 'Script Analysis & Cast Breakdown',
+    icon: '\uD83D\uDCDC',
+    category: 'AI Tools',
+    description: 'AI analyzes script text to extract characters, scenes, props, and set requirements',
+    apiPath: '/api/ai/script-analysis',
+    isAI: true,
+    aiFields: [
+      { key: 'title', label: 'Script Title', type: 'text', placeholder: 'e.g., Hamlet' },
+      { key: 'script_text', label: 'Script Text', type: 'textarea', required: true, placeholder: 'Paste your script text here (first 8000 characters analyzed)...' },
+    ],
+  },
+
+  'ticket-pricing': {
+    key: 'ticket-pricing',
+    title: 'Dynamic Ticket Pricing',
+    icon: '\uD83C\uDFAB',
+    category: 'AI Tools',
+    description: 'AI recommends dynamic price adjustments for unsold ticket blocks',
+    apiPath: '/api/ai/ticket-pricing',
+    isAI: true,
+    aiFields: [
+      { key: 'show_id', label: 'Show ID', type: 'number', placeholder: 'Enter show ID to analyze (optional)' },
+    ],
+  },
+
+  'rehearsal-schedule': {
+    key: 'rehearsal-schedule',
+    title: 'Conflict-Aware Rehearsal Scheduler',
+    icon: '\uD83D\uDCC5',
+    category: 'AI Tools',
+    description: 'AI generates conflict-free rehearsal schedule considering all cast and venue bookings',
+    apiPath: '/api/ai/rehearsal-schedule',
+    isAI: true,
+    aiFields: [
+      { key: 'show_id', label: 'Show ID', type: 'number', required: true, placeholder: 'Enter show ID' },
+      { key: 'show_title', label: 'Show Title', type: 'text', placeholder: 'e.g., Romeo and Juliet' },
+    ],
+  },
+
+  'season-planning': {
+    key: 'season-planning',
+    title: 'Season Planning Optimizer',
+    icon: '🗓️',
+    category: 'AI Tools',
+    description: 'AI recommends a season slate balanced for budget, audience demand, and artistic mix.',
+    apiPath: '/api/ai/season-planning',
+    isAI: true,
+    aiFields: [
+      { key: 'season_year', label: 'Season Year', type: 'text', required: true, placeholder: 'e.g., 2026-2027' },
+      { key: 'budget', label: 'Total Season Budget (USD)', type: 'number', placeholder: 'e.g., 750000' },
+      { key: 'show_count', label: 'Number of Shows', type: 'number', placeholder: 'e.g., 6' },
+      { key: 'audience_focus', label: 'Audience Focus', type: 'text', placeholder: 'e.g., Family-friendly with two adult dramas' },
+      { key: 'goals', label: 'Season Goals', type: 'textarea', placeholder: 'Mission goals, fundraising targets, community engagement priorities...' },
+    ],
+  },
+
+  'performance-outcome': {
+    key: 'performance-outcome',
+    title: 'Performance Outcome Predictor',
+    icon: '🔮',
+    category: 'AI Tools',
+    description: 'Predict ticket sales and review sentiment for an upcoming production.',
+    apiPath: '/api/ai/performance-outcome',
+    isAI: true,
+    aiFields: [
+      { key: 'show_title', label: 'Show Title', type: 'text', required: true, placeholder: 'e.g., Hamlet' },
+      { key: 'genre', label: 'Genre', type: 'select', options: ['Drama', 'Comedy', 'Musical', 'Tragedy', 'Farce', 'Experimental', 'Opera', 'Ballet', 'Other'] },
+      { key: 'venue_capacity', label: 'Venue Capacity', type: 'number', placeholder: 'e.g., 400' },
+      { key: 'run_length_weeks', label: 'Run Length (weeks)', type: 'number', placeholder: 'e.g., 4' },
+      { key: 'ticket_price_range', label: 'Ticket Price Range', type: 'text', placeholder: 'e.g., $25-$65' },
+      { key: 'marketing_budget', label: 'Marketing Budget (USD)', type: 'number', placeholder: 'e.g., 25000' },
+      { key: 'context', label: 'Context / Notes', type: 'textarea', placeholder: 'Cast, director reputation, season fit, prior similar shows...' },
+    ],
+  },
+
+  'fundraising-campaign': {
+    key: 'fundraising-campaign',
+    title: 'Fundraising Campaign Planner',
+    icon: '💰',
+    category: 'AI Tools',
+    description: 'AI segments donors and builds a multi-channel fundraising campaign plan.',
+    apiPath: '/api/ai/fundraising-campaign',
+    isAI: true,
+    aiFields: [
+      { key: 'campaign_name', label: 'Campaign Name', type: 'text', required: true, placeholder: 'e.g., 2026 Annual Fund' },
+      { key: 'goal_usd', label: 'Fundraising Goal (USD)', type: 'number', required: true, placeholder: 'e.g., 250000' },
+      { key: 'duration_weeks', label: 'Duration (weeks)', type: 'number', placeholder: 'e.g., 8' },
+      { key: 'focus', label: 'Focus / Use of Funds', type: 'text', placeholder: 'e.g., New education program' },
+      { key: 'themes', label: 'Messaging Themes', type: 'textarea', placeholder: 'Key themes, season tie-ins, mission moments...' },
+    ],
+  },
+
+  'script-recommendation': {
+    key: 'script-recommendation',
+    title: 'Script Recommendation Engine',
+    icon: '📜',
+    category: 'AI Tools',
+    description: 'AI recommends candidate plays/scripts matching theme, cast size, and audience fit.',
+    apiPath: '/api/ai/script-recommendation',
+    isAI: true,
+    aiFields: [
+      { key: 'theme', label: 'Theme', type: 'text', placeholder: 'e.g., resilience and family' },
+      { key: 'audience', label: 'Target Audience', type: 'text', placeholder: 'e.g., adult subscribers' },
+      { key: 'cast_size_max', label: 'Maximum Cast Size', type: 'number', placeholder: 'e.g., 8' },
+      { key: 'budget_usd', label: 'Production Budget (USD)', type: 'number', placeholder: 'e.g., 75000' },
+      { key: 'run_length_weeks', label: 'Run Length (weeks)', type: 'number', placeholder: 'e.g., 4' },
+      { key: 'public_domain_only', label: 'Public Domain Only', type: 'select', options: ['no', 'yes'] },
+      { key: 'exclude_titles', label: 'Exclude Titles (comma-separated)', type: 'text', placeholder: 'e.g., Hamlet, Our Town' },
+    ],
+  },
 };
 
 export const featureCategories = ['Production', 'Operations', 'Finance', 'AI Tools'];

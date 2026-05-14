@@ -1,20 +1,26 @@
 const express = require('express');
 const pool = require('../db');
 
-/**
- * Creates a generic CRUD router for any table.
- * @param {string} tableName - The database table name
- * @param {string[]} columns - Array of column names (excluding id and created_at)
- * @returns {express.Router}
- */
 function createCrudRoutes(tableName, columns) {
   const router = express.Router();
 
-  // GET / - List all items
+  // GET / - List with pagination
   router.get('/', async (req, res) => {
     try {
-      const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY id DESC`);
-      res.json({ success: true, data: result.rows });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const offset = (page - 1) * limit;
+      const total = await pool.query(`SELECT COUNT(*) FROM ${tableName}`);
+      const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY id DESC LIMIT $1 OFFSET $2`, [limit, offset]);
+      res.json({
+        success: true,
+        data: result.rows,
+        pagination: {
+          page, limit,
+          total: parseInt(total.rows[0].count),
+          pages: Math.ceil(total.rows[0].count / limit),
+        }
+      });
     } catch (err) {
       console.error(`Error fetching ${tableName}:`, err.message);
       res.status(500).json({ success: false, error: `Failed to fetch ${tableName}.` });
@@ -26,11 +32,9 @@ function createCrudRoutes(tableName, columns) {
     try {
       const { id } = req.params;
       const result = await pool.query(`SELECT * FROM ${tableName} WHERE id = $1`, [id]);
-
       if (result.rows.length === 0) {
         return res.status(404).json({ success: false, error: `${tableName} item not found.` });
       }
-
       res.json({ success: true, data: result.rows[0] });
     } catch (err) {
       console.error(`Error fetching ${tableName} by id:`, err.message);
@@ -88,7 +92,6 @@ function createCrudRoutes(tableName, columns) {
 
       values.push(id);
       const query = `UPDATE ${tableName} SET ${setClauses.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
-
       const result = await pool.query(query, values);
 
       if (result.rows.length === 0) {
@@ -107,11 +110,9 @@ function createCrudRoutes(tableName, columns) {
     try {
       const { id } = req.params;
       const result = await pool.query(`DELETE FROM ${tableName} WHERE id = $1 RETURNING *`, [id]);
-
       if (result.rows.length === 0) {
         return res.status(404).json({ success: false, error: `${tableName} item not found.` });
       }
-
       res.json({ success: true, data: result.rows[0], message: `${tableName} item deleted successfully.` });
     } catch (err) {
       console.error(`Error deleting ${tableName}:`, err.message);
