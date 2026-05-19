@@ -24,6 +24,9 @@ function Navbar({ title }) {
         <button className="btn btn-secondary btn-sm" onClick={() => navigate('/dashboard')}>
           Dashboard
         </button>
+        <button className="btn btn-secondary btn-sm" onClick={() => navigate('/custom-views')}>
+          Theater Views
+        </button>
         <button className="btn btn-outline btn-sm" onClick={handleLogout}>
           Logout
         </button>

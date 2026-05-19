@@ -26,11 +26,15 @@ import GapNoPatronSubscriberSelfServicePortal from './pages/GapNoPatronSubscribe
 import GapNoWebhooksOrNotifications from './pages/GapNoWebhooksOrNotifications'
 import GapNoPaymentProcessorIntegration from './pages/GapNoPaymentProcessorIntegration'
 import GapNoCrmStyleSegmentationBeyondDonorRecords from './pages/GapNoCrmStyleSegmentationBeyondDonorRecords'
+import CustomViewsPage from './pages/CustomViewsPage'
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/" replace />;
 }
+
+// Alias for batch08 generated routes that reference ProtectedRoute
+const ProtectedRoute = PrivateRoute;
 
 function App() {
   return (
@@ -44,6 +48,7 @@ function App() {
         <Route path="/donor-stewardship" element={<PrivateRoute><DonorStewardship /></PrivateRoute>} />
         <Route path="/script-analysis" element={<PrivateRoute><ScriptAnalysis /></PrivateRoute>} />
         <Route path="/ticket-pricing" element={<PrivateRoute><TicketPricingPage /></PrivateRoute>} />
+        <Route path="/custom-views" element={<PrivateRoute><CustomViewsPage /></PrivateRoute>} />
         {/* // === Batch 08 Gaps & Frontend Mounts === */}
       <Route path="/cf-season-planning-optimizer-recommending-show-mix" element={<ProtectedRoute><CfSeasonPlanningOptimizerRecommendingShowMix /></ProtectedRoute>} />
       <Route path="/cf-performance-outcome-prediction-for-ticket-sales-and-review" element={<ProtectedRoute><CfPerformanceOutcomePredictionForTicketSalesAnd /></ProtectedRoute>} />

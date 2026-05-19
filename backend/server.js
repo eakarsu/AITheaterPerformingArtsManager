@@ -79,6 +79,9 @@ for (const [tableName, columns] of Object.entries(tableDefinitions)) {
 // AI routes (auth already applied above)
 app.use('/api/ai', aiRouter);
 
+// Custom Views (Theater Views) - mounted BEFORE 404 handler
+app.use('/api/custom-views', require('./routes/customViews'));
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Endpoint not found.' });
