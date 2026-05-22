@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 
-const API_URL = 'http://localhost:4000';
+const API_URL = 'http://localhost:4060';
 function getAuthHeader() { return { Authorization: `Bearer ${localStorage.getItem('token')}` }; }
 
 const SEGMENT_COLORS = {

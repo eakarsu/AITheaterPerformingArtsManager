@@ -8,6 +8,11 @@ import BoxOfficeDashboard from './pages/BoxOfficeDashboard';
 import DonorStewardship from './pages/DonorStewardship';
 import ScriptAnalysis from './pages/ScriptAnalysis';
 import TicketPricingPage from './pages/TicketPricingPage';
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
+
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfSeasonPlanningOptimizerRecommendingShowMix from './pages/CfSeasonPlanningOptimizerRecommendingShowMix'
 import CfPerformanceOutcomePredictionForTicketSalesAnd from './pages/CfPerformanceOutcomePredictionForTicketSalesAnd'
@@ -40,6 +45,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/insights/timeline" element={<ProtectedRoute><TimelineView /></ProtectedRoute>} />
+        <Route path="/codex/custom-viz" element={<ProtectedRoute><CodexCustomVizFeature /></ProtectedRoute>} />
+        <Route path="/codex/operations" element={<ProtectedRoute><CodexOperationsFeature /></ProtectedRoute>} />
+
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/features/:featureName" element={<PrivateRoute><FeaturePage /></PrivateRoute>} />

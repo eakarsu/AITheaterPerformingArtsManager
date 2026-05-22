@@ -4,7 +4,7 @@ import axios from 'axios';
 import Navbar from '../components/Navbar';
 import features from '../config/features';
 
-const API_URL = 'http://localhost:4000';
+const API_URL = 'http://localhost:4060';
 
 function getAuthHeader() {
   const token = localStorage.getItem('token');
