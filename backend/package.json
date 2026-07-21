@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "schema": "node schema.js",
-    "seed": "node seed.js",
+    "seed": "node schema.js && node seed.js",
     "setup": "node schema.js && node seed.js"
   },
   "dependencies": {

@@ -1,8 +1,20 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { promisify } = require('util');
 const pool = require('../db');
 
 const router = express.Router();
+const deriveKey = promisify(crypto.scrypt);
+
+async function verifyScryptPassword(password, encoded) {
+  const parts = String(encoded || '').split('$');
+  if (parts.length !== 3 || parts[0] !== 'scrypt') return null;
+  const expected = Buffer.from(parts[2], 'hex');
+  if (!parts[1] || expected.length !== 64) return null;
+  const actual = await deriveKey(password, parts[1], expected.length);
+  return crypto.timingSafeEqual(expected, actual);
+}
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -21,8 +33,15 @@ router.post('/login', async (req, res) => {
 
     const user = result.rows[0];
 
-    // Plain text password comparison for demo purposes
-    if (password !== user.password) {
+    const validPassword = await verifyScryptPassword(password, user.password);
+    if (validPassword === null) {
+      return res.status(503).json({
+        success: false,
+        error: 'PASSWORD_MIGRATION_REQUIRED',
+        message: 'This account must be migrated to the scrypt credential format before login.',
+      });
+    }
+    if (!validPassword) {
       return res.status(401).json({ success: false, error: 'Invalid email or password.' });
     }
 
@@ -45,6 +64,16 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err.message);
     res.status(500).json({ success: false, error: 'Internal server error.' });
+  }
+});
+
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, email, name, role FROM users WHERE id=$1 LIMIT 1', [req.user.id]);
+    if (!result.rows.length) return res.status(401).json({ success: false, error: 'Session user no longer exists.' });
+    res.json({ success: true, user: result.rows[0] });
+  } catch (_) {
+    res.status(500).json({ success: false, error: 'Unable to verify persisted session.' });
   }
 });
 

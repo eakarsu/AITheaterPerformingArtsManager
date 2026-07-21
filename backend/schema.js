@@ -1,5 +1,9 @@
 const pool = require('./db');
 
+if (process.env.NODE_ENV === 'production' || process.env.ALLOW_DEMO_SEED !== 'true') {
+  throw new Error('Destructive demo schema reset requires ALLOW_DEMO_SEED=true outside production.');
+}
+
 const schema = `
 DROP TABLE IF EXISTS financial_reports CASCADE;
 DROP TABLE IF EXISTS concessions CASCADE;

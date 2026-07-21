@@ -1,17 +1,34 @@
 const pool = require('./db');
+const crypto = require('crypto');
+const { promisify } = require('util');
+
+if (process.env.NODE_ENV === 'production' || process.env.ALLOW_DEMO_SEED !== 'true') {
+  throw new Error('Demo seeding requires ALLOW_DEMO_SEED=true outside production.');
+}
+const demoPassword = String(process.env.DEMO_PASSWORD || '');
+if (demoPassword.length < 12) throw new Error('DEMO_PASSWORD must contain at least 12 characters.');
+const deriveKey = promisify(crypto.scrypt);
+
+async function encodePassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const key = await deriveKey(password, salt, 64);
+  return `scrypt$${salt}$${key.toString('hex')}`;
+}
 
 async function seed() {
   try {
     console.log('Seeding database...');
 
+    const passwordHashes = await Promise.all([0, 1, 2, 3].map(() => encodePassword(demoPassword)));
+
     // Users
     await pool.query(`
       INSERT INTO users (email, password, name, role) VALUES
-      ('admin@theater.com', 'password123', 'Sarah Mitchell', 'admin'),
-      ('director@theater.com', 'password123', 'James Thornton', 'director'),
-      ('stage.manager@theater.com', 'password123', 'Rebecca Liu', 'stage_manager'),
-      ('box.office@theater.com', 'password123', 'Marcus Williams', 'box_office')
-    `);
+      ('admin@theater.com', $1, 'Sarah Mitchell', 'admin'),
+      ('director@theater.com', $2, 'James Thornton', 'director'),
+      ('stage.manager@theater.com', $3, 'Rebecca Liu', 'stage_manager'),
+      ('box.office@theater.com', $4, 'Marcus Williams', 'box_office')
+    `, passwordHashes);
     console.log('Users seeded.');
 
     // Shows
