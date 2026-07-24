@@ -6,8 +6,8 @@ const pool = require('../db');
 
 const router = express.Router();
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
+const OPENROUTER_BASE_URL = String(process.env.OPENROUTER_BASE_URL || '').replace(/\/$/, '');
+const MODEL = process.env.OPENROUTER_MODEL;
 
 // Rate limiter: 20 requests/hour per user
 const aiRateLimiter = rateLimit({
@@ -26,7 +26,8 @@ function requireOpenRouterKey(req, res, next) {
 }
 
 async function callOpenRouter(systemPrompt, userPrompt) {
-  const response = await fetch(OPENROUTER_URL, {
+  if (!process.env.OPENROUTER_API_KEY || !MODEL || !OPENROUTER_BASE_URL) throw new Error('Exact OpenRouter configuration is required');
+  const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
@@ -66,24 +67,10 @@ function parseAIJson(raw) {
 }
 
 async function persistAIResult(userId, endpoint, inputData, result) {
-  try {
-    await pool.query(
-      `CREATE TABLE IF NOT EXISTS ai_results (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER,
-        endpoint VARCHAR(100),
-        input_data JSONB,
-        result JSONB,
-        created_at TIMESTAMP DEFAULT NOW()
-      )`
-    );
-    await pool.query(
-      'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
-      [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
-    );
-  } catch (err) {
-    console.error('Failed to persist AI result:', err.message);
-  }
+  await pool.query(
+    'INSERT INTO ai_results (user_id, endpoint, input_data, result) VALUES ($1, $2, $3, $4)',
+    [userId, endpoint, JSON.stringify(inputData), JSON.stringify(result)]
+  );
 }
 
 // POST /api/ai/marketing
