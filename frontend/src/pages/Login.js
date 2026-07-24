@@ -31,8 +31,8 @@ function Login() {
   };
 
   const handleQuickLogin = () => {
-    setEmail('admin@theater.com');
-    setPassword('password123');
+    setEmail(process.env.REACT_APP_DEMO_EMAIL || '');
+    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
     setTimeout(() => {
       const form = document.getElementById('login-form');
       if (form) form.requestSubmit();
