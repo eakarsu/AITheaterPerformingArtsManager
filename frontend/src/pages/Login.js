@@ -83,7 +83,7 @@ function Login() {
           </button>
 
           <button type="button" className="btn btn-gold btn-full" onClick={handleQuickLogin}>
-            Quick Login (Demo)
+            Auto Fill Demo Credentials
           </button>
         </form>
 
